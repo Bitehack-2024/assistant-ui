@@ -21,6 +21,7 @@ import { unzip } from "unzipit";
 import { useEffect, useState } from "react";
 import { Toaster, toaster } from "./components/ui/toaster";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
+import Logo from "./assets/tło2.png";
 
 function App() {
   const [open, setOpen] = useState(false);
@@ -37,8 +38,24 @@ function App() {
 
     const { entries } = await unzip(userFile);
 
+    const ordered = Object.keys(entries).sort((a, b) => {
+      const ax = a.split("-")[1];
+      const bx = b.split("-")[1];
+
+      console.log(Number(ax.substring(0, ax.length - 3)));
+      console.log(Number(bx.substring(0, bx.length - 3)));
+
+      return (
+        Number(ax.substring(0, ax.length - 3)) -
+        Number(bx.substring(0, bx.length - 3))
+      );
+    });
+
+    console.log(ordered);
+
     const files = [];
-    for (let entry in entries) {
+    for (let entry of ordered) {
+      console.log(entry);
       files.push(await entries[entry].blob());
     }
 
@@ -63,6 +80,7 @@ function App() {
       <HStack w={"90%"} mx={"auto"}>
         <HStack w={"full"} justifyContent={"space-between"} paddingY={"10px"}>
           <HStack>
+            <Image src={Logo} height={"35px"} mr={"5px"} />
             <Box fontWeight={"black"} color={"gray.600"}>
               Click Dziadek
             </Box>
