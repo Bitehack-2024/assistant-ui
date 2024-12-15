@@ -12,6 +12,7 @@ import {
   DialogTitle,
   DialogTrigger,
   HStack,
+  IconButton,
   Image,
   Input,
   VStack,
@@ -19,11 +20,13 @@ import {
 import { unzip } from "unzipit";
 import { useEffect, useState } from "react";
 import { Toaster, toaster } from "./components/ui/toaster";
+import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 
 function App() {
   const [open, setOpen] = useState(false);
   const [userFile, setUserFile] = useState<any>();
   const [userFiles, setUserFiles] = useState<any>();
+  const [index, setIndex] = useState(0);
 
   const handleSubmitFile = async () => {
     toaster.create({
@@ -46,9 +49,6 @@ function App() {
   const handleFileReader = async (event: any) => {
     const newFile = event.target.files[0];
 
-    // const content = await newFile.text();
-
-    // console.log(content);
     setUserFile(newFile);
   };
 
@@ -112,10 +112,34 @@ function App() {
             <DialogCloseTrigger />
           </DialogContent>
         </DialogRoot>
-        {userFiles &&
-          userFiles.map((imageData: any) => {
-            return <Image src={URL.createObjectURL(imageData)} />;
-          })}
+        <Box position={"relative"}>
+          {userFiles && (
+            <>
+              <IconButton
+                position={"absolute"}
+                top={"50%"}
+                left={"-100px"}
+                onClick={() => setIndex((prev) => Math.max(0, prev - 1))}
+              >
+                <FaAngleLeft />
+              </IconButton>
+              <IconButton
+                position={"absolute"}
+                top={"50%"}
+                right={"-100px"}
+                onClick={() =>
+                  setIndex((prev) => Math.min(userFiles.length - 1, prev + 1))
+                }
+              >
+                <FaAngleRight />
+              </IconButton>
+              <Image
+                src={URL.createObjectURL(userFiles[index])}
+                marginBottom={"10px"}
+              />
+            </>
+          )}
+        </Box>
       </VStack>
     </>
   );
